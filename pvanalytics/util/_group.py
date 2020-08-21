@@ -25,3 +25,26 @@ def by_day(data):
     return data.groupby(
         pd.to_datetime(data.index.date).tz_localize(data.index.tz)
     )
+
+
+def run_lengths(series):
+    # Count the number of equal values adjacent to each value.
+    #
+    # Examples
+    # --------
+    # >>> _run_lengths(pd.Series([True, True, True]))
+    # 0    3
+    # 1    3
+    # 2    3
+    #
+    # >>> _run_lengths(
+    # ...     pd.Series([True, False, False, True, True, False]
+    # ... ))
+    # 0    1
+    # 1    2
+    # 2    2
+    # 3    2
+    # 4    2
+    # 5    1
+    runs = (series != series.shift(1)).cumsum()
+    return runs.groupby(runs).transform('count')
